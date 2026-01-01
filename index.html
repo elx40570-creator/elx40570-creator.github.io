@@ -26,7 +26,7 @@ body{
 }
 
 .logo{
-  width:130px;
+  width:120px;
   margin-bottom:15px;
 }
 
@@ -34,30 +34,27 @@ h1{
   margin:10px 0;
 }
 
-p{
-  margin:8px 0;
-  color:#333;
-}
-
-.status-online{
-  color:green;
+.status{
   font-weight:bold;
+  margin:10px 0;
 }
 
-.status-offline{
-  color:red;
-  font-weight:bold;
-}
+.online{ color:green; }
+.offline{ color:red; }
 
-.join{
+.join-btn{
   display:block;
-  margin-top:15px;
-  padding:12px;
-  background:#1aa34a;
+  background:#1faa59;
   color:white;
-  text-decoration:none;
+  padding:12px;
   border-radius:10px;
+  text-decoration:none;
+  margin:15px 0;
   font-weight:bold;
+}
+
+.links{
+  margin-top:10px;
 }
 </style>
 </head>
@@ -68,15 +65,18 @@ p{
   <img src="logo.png" class="logo">
 
   <h1>IRAN GAME ROLE PLAY</h1>
-
   <p>🎮 GTA SAN RP</p>
 
   <p id="players">👥 پلیر آنلاین: -- / 250</p>
-  <p id="status">⏳ در حال بررسی وضعیت سرور...</p>
+  <p id="status" class="status">⏳ در حال بررسی...</p>
 
-  <a href="samp://5.57.35.73:7777" class="join">▶ Join Server</a>
+  <a id="join" class="join-btn" href="#">▶ Join Server</a>
 
-  <p>📌 قوانین | تلگرام | دانلود</p>
+  <div class="links">
+    📌 <a href="https://t.me/YOUR_TELEGRAM" target="_blank">تلگرام</a> |
+    <a href="#">قوانین</a> |
+    <a href="#">دانلود</a>
+  </div>
 </div>
 
 <script>
@@ -84,29 +84,27 @@ const ip = "5.57.35.73";
 const port = "7777";
 const maxPlayers = 250;
 
-fetch(`https://api.samp-servers.com/server/${ip}:${port}`)
+fetch(`https://api.samp-servers.net/v2/server/${ip}:${port}`)
 .then(res => res.json())
 .then(data => {
+  const onlinePlayers = data.playersOnline ?? 0;
+
+  document.getElementById("players").innerHTML =
+    `👥 پلیر آنلاین: ${onlinePlayers} / ${maxPlayers}`;
+
   if(data.online){
-    document.getElementById("status").innerHTML =
-      "🟢 وضعیت سرور: آنلاین";
-    document.getElementById("status").className = "status-online";
-
-    document.getElementById("players").innerHTML =
-      `👥 پلیر آنلاین: ${data.players}/${maxPlayers}`;
+    document.getElementById("status").innerHTML = "🟢 وضعیت سرور: آنلاین";
+    document.getElementById("status").className = "status online";
+    document.getElementById("join").href = `samp://${ip}:${port}`;
   }else{
-    document.getElementById("status").innerHTML =
-      "🔴 وضعیت سرور: آفلاین";
-    document.getElementById("status").className = "status-offline";
-
-    document.getElementById("players").innerHTML =
-      `👥 پلیر آنلاین: 0/${maxPlayers}`;
+    document.getElementById("status").innerHTML = "🔴 وضعیت سرور: آفلاین";
+    document.getElementById("status").className = "status offline";
+    document.getElementById("join").style.opacity = "0.5";
   }
 })
 .catch(()=>{
-  document.getElementById("status").innerHTML =
-    "🔴 وضعیت سرور: آفلاین";
-  document.getElementById("status").className = "status-offline";
+  document.getElementById("status").innerHTML = "🔴 خطا در اتصال به سرور";
+  document.getElementById("status").className = "status offline";
 });
 </script>
 
