@@ -36,13 +36,11 @@ h1{
   font-size:22px;
 }
 
-.info{
-  margin:10px 0;
-  font-size:16px;
+.players{
+  margin:18px 0;
+  font-size:18px;
+  font-weight:bold;
 }
-
-.status-online{ color:green; font-weight:bold; }
-.status-offline{ color:red; font-weight:bold; }
 
 .join-btn{
   display:block;
@@ -54,10 +52,6 @@ h1{
   border-radius:12px;
   font-weight:bold;
 }
-.join-btn.disabled{
-  background:#999;
-  pointer-events:none;
-}
 </style>
 </head>
 
@@ -68,38 +62,32 @@ h1{
 
   <h1>IRAN GAME ROLE PLAY</h1>
 
-  <div id="players" class="info">👥 0 پلیر</div>
-  <div id="status" class="info status-offline">🔴 وضعیت سرور: آفلاین</div>
+  <div id="players" class="players">
+    داخل سرور در حال بررسی پلیر هست
+  </div>
 
-  <a id="join" class="join-btn disabled" href="#">▶ Join Server</a>
+  <a class="join-btn" href="samp://5.57.35.73:7777">▶ Join Server</a>
 </div>
 
 <script>
 const ip = "5.57.35.73";
 const port = "7777";
 
-// فعلاً نسخه ساده (بدون API)
-// بعداً وصلش می‌کنیم به وضعیت واقعی سرور
+// API + Proxy (سازگار با GitHub Pages)
+const apiURL = `https://api.samp-servers.net/v2/server/${ip}:${port}`;
+const proxyURL = `https://api.allorigins.win/raw?url=${encodeURIComponent(apiURL)}`;
 
-function setOffline(){
-  document.getElementById("players").innerText = "👥 0 پلیر";
-  document.getElementById("status").innerText = "🔴 وضعیت سرور: آفلاین";
-  document.getElementById("status").className = "info status-offline";
-  document.getElementById("join").classList.add("disabled");
-}
-
-function setOnline(players){
-  document.getElementById("players").innerText = `👥 ${players} پلیر`;
-  document.getElementById("status").innerText = "🟢 وضعیت سرور: آنلاین";
-  document.getElementById("status").className = "info status-online";
-  const join = document.getElementById("join");
-  join.classList.remove("disabled");
-  join.href = `samp://${ip}:${port}`;
-}
-
-// تست دستی (بعداً حذف می‌کنیم)
-setOffline();
-// setOnline(5); ← اگر خواستی آنلاین تست کنی
+fetch(proxyURL)
+.then(res => res.json())
+.then(data => {
+  const players = Number(data.playersOnline) || 0;
+  document.getElementById("players").innerText =
+    `داخل سرور ${players} پلیر هست`;
+})
+.catch(() => {
+  document.getElementById("players").innerText =
+    "داخل سرور 0 پلیر هست";
+});
 </script>
 
 </body>
