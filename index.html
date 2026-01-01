@@ -20,26 +20,40 @@ body{
   background:white;
   padding:30px;
   border-radius:20px;
-  max-width:400px;
+  max-width:420px;
   width:90%;
   box-shadow:0 10px 30px rgba(0,0,0,0.3);
 }
 
-.logo{ width:120px; margin-bottom:15px; }
+.logo{
+  width:130px;
+  margin-bottom:15px;
+}
 
-.players, .status{
-  margin-top:8px;
+h1{
+  margin:10px 0;
+}
+
+p{
+  margin:8px 0;
+  color:#333;
+}
+
+.status-online{
+  color:green;
   font-weight:bold;
 }
 
-.online{ color:#0f9d58; }
-.offline{ color:#db4437; }
+.status-offline{
+  color:red;
+  font-weight:bold;
+}
 
-.join-btn{
+.join{
   display:block;
   margin-top:15px;
   padding:12px;
-  background:#0f9d58;
+  background:#1aa34a;
   color:white;
   text-decoration:none;
   border-radius:10px;
@@ -54,44 +68,46 @@ body{
   <img src="logo.png" class="logo">
 
   <h1>IRAN GAME ROLE PLAY</h1>
+
   <p>🎮 GTA SAN RP</p>
 
-  <p class="players" id="players">⏳ دریافت پلیر...</p>
-  <p class="status" id="status">⏳ بررسی وضعیت...</p>
+  <p id="players">👥 پلیر آنلاین: -- / 250</p>
+  <p id="status">⏳ در حال بررسی وضعیت سرور...</p>
 
-  <a class="join-btn" href="samp://5.57.35.73:7777">▶️ Join Server</a>
+  <a href="samp://5.57.35.73:7777" class="join">▶ Join Server</a>
 
   <p>📌 قوانین | تلگرام | دانلود</p>
 </div>
 
 <script>
+const ip = "5.57.35.73";
+const port = "7777";
 const maxPlayers = 250;
-const target =
-  "https://api.sampquery.info/api/players/5.57.35.73:7777";
 
-const api =
-  "https://api.allorigins.win/raw?url=" + encodeURIComponent(target);
+fetch(`https://api.samp-servers.com/server/${ip}:${port}`)
+.then(res => res.json())
+.then(data => {
+  if(data.online){
+    document.getElementById("status").innerHTML =
+      "🟢 وضعیت سرور: آنلاین";
+    document.getElementById("status").className = "status-online";
 
-fetch(api)
-  .then(res => res.json())
-  .then(data => {
-    const online = data.players;
+    document.getElementById("players").innerHTML =
+      `👥 پلیر آنلاین: ${data.players}/${maxPlayers}`;
+  }else{
+    document.getElementById("status").innerHTML =
+      "🔴 وضعیت سرور: آفلاین";
+    document.getElementById("status").className = "status-offline";
 
-    document.getElementById("players").innerText =
-      "👥 پلیر آنلاین: " + online + " / " + maxPlayers;
-
-    const st = document.getElementById("status");
-    st.innerText = "🟢 وضعیت سرور: آنلاین";
-    st.className = "status online";
-  })
-  .catch(() => {
-    document.getElementById("players").innerText =
-      "👥 پلیر آنلاین: 0 / 250";
-
-    const st = document.getElementById("status");
-    st.innerText = "🔴 وضعیت سرور: آفلاین";
-    st.className = "status offline";
-  });
+    document.getElementById("players").innerHTML =
+      `👥 پلیر آنلاین: 0/${maxPlayers}`;
+  }
+})
+.catch(()=>{
+  document.getElementById("status").innerHTML =
+    "🔴 وضعیت سرور: آفلاین";
+  document.getElementById("status").className = "status-offline";
+});
 </script>
 
 </body>
