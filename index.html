@@ -79,32 +79,37 @@ h1{
   </div>
 </div>
 
-<script>
+<script><script>
 const ip = "5.57.35.73";
 const port = "7777";
-const maxPlayers = 250;
 
 fetch(`https://api.samp-servers.net/v2/server/${ip}:${port}`)
 .then(res => res.json())
 .then(data => {
-  const onlinePlayers = data.playersOnline ?? 0;
+  const players = Number(data.playersOnline) || 0;
 
-  document.getElementById("players").innerHTML =
-    `👥 پلیر آنلاین: ${onlinePlayers} / ${maxPlayers}`;
+  // نمایش ساده تعداد پلیر
+  document.getElementById("players").innerHTML = `👥 ${players} پلیر`;
 
-  if(data.online){
+  if (data.online && players >= 0) {
     document.getElementById("status").innerHTML = "🟢 وضعیت سرور: آنلاین";
     document.getElementById("status").className = "status online";
     document.getElementById("join").href = `samp://${ip}:${port}`;
-  }else{
+    document.getElementById("join").style.pointerEvents = "auto";
+    document.getElementById("join").style.opacity = "1";
+  } else {
     document.getElementById("status").innerHTML = "🔴 وضعیت سرور: آفلاین";
     document.getElementById("status").className = "status offline";
+    document.getElementById("join").style.pointerEvents = "none";
     document.getElementById("join").style.opacity = "0.5";
   }
 })
-.catch(()=>{
-  document.getElementById("status").innerHTML = "🔴 خطا در اتصال به سرور";
+.catch(() => {
+  document.getElementById("players").innerHTML = "👥 0 پلیر";
+  document.getElementById("status").innerHTML = "🔴 وضعیت سرور: آفلاین";
   document.getElementById("status").className = "status offline";
+  document.getElementById("join").style.pointerEvents = "none";
+  document.getElementById("join").style.opacity = "0.5";
 });
 </script>
 
