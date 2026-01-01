@@ -2,6 +2,7 @@
 <html lang="fa">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IRAN GAME ROLE PLAY</title>
 
 <style>
@@ -9,20 +10,20 @@ body{
   margin:0;
   font-family:tahoma;
   min-height:100vh;
-  background:linear-gradient(135deg, green, white, red);
+  background:linear-gradient(135deg, #0f9d58, #ffffff, #db4437);
   display:flex;
   justify-content:center;
   align-items:center;
-  text-align:center;
 }
 
-.box{
-  background:white;
+.card{
+  background:rgba(255,255,255,0.95);
+  width:90%;
+  max-width:400px;
   padding:30px;
   border-radius:20px;
-  max-width:420px;
-  width:90%;
-  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+  text-align:center;
+  box-shadow:0 15px 35px rgba(0,0,0,0.25);
 }
 
 .logo{
@@ -32,85 +33,73 @@ body{
 
 h1{
   margin:10px 0;
+  font-size:22px;
 }
 
-.status{
-  font-weight:bold;
+.info{
   margin:10px 0;
+  font-size:16px;
 }
 
-.online{ color:green; }
-.offline{ color:red; }
+.status-online{ color:green; font-weight:bold; }
+.status-offline{ color:red; font-weight:bold; }
 
 .join-btn{
   display:block;
+  margin-top:20px;
+  padding:14px;
   background:#1faa59;
-  color:white;
-  padding:12px;
-  border-radius:10px;
+  color:#fff;
   text-decoration:none;
-  margin:15px 0;
+  border-radius:12px;
   font-weight:bold;
 }
-
-.links{
-  margin-top:10px;
+.join-btn.disabled{
+  background:#999;
+  pointer-events:none;
 }
 </style>
 </head>
 
 <body>
 
-<div class="box">
-  <img src="logo.png" class="logo">
+<div class="card">
+  <img src="logo.png" class="logo" alt="IRAN GAME ROLE PLAY">
 
   <h1>IRAN GAME ROLE PLAY</h1>
-  <p>🎮 GTA SAN RP</p>
 
-  <p id="players">👥 پلیر آنلاین: -- / 250</p>
-  <p id="status" class="status">⏳ در حال بررسی...</p>
+  <div id="players" class="info">👥 0 پلیر</div>
+  <div id="status" class="info status-offline">🔴 وضعیت سرور: آفلاین</div>
 
-  <a id="join" class="join-btn" href="#">▶ Join Server</a>
-
-  <div class="links">
-    📌 <a href="https://t.me/YOUR_TELEGRAM" target="_blank">تلگرام</a> |
-    <a href="#">قوانین</a> |
-    <a href="#">دانلود</a>
-  </div>
+  <a id="join" class="join-btn disabled" href="#">▶ Join Server</a>
 </div>
 
-<script><script>
+<script>
 const ip = "5.57.35.73";
 const port = "7777";
 
-fetch(`https://api.samp-servers.net/v2/server/${ip}:${port}`)
-.then(res => res.json())
-.then(data => {
-  const players = Number(data.playersOnline) || 0;
+// فعلاً نسخه ساده (بدون API)
+// بعداً وصلش می‌کنیم به وضعیت واقعی سرور
 
-  // نمایش ساده تعداد پلیر
-  document.getElementById("players").innerHTML = `👥 ${players} پلیر`;
+function setOffline(){
+  document.getElementById("players").innerText = "👥 0 پلیر";
+  document.getElementById("status").innerText = "🔴 وضعیت سرور: آفلاین";
+  document.getElementById("status").className = "info status-offline";
+  document.getElementById("join").classList.add("disabled");
+}
 
-  if (data.online && players >= 0) {
-    document.getElementById("status").innerHTML = "🟢 وضعیت سرور: آنلاین";
-    document.getElementById("status").className = "status online";
-    document.getElementById("join").href = `samp://${ip}:${port}`;
-    document.getElementById("join").style.pointerEvents = "auto";
-    document.getElementById("join").style.opacity = "1";
-  } else {
-    document.getElementById("status").innerHTML = "🔴 وضعیت سرور: آفلاین";
-    document.getElementById("status").className = "status offline";
-    document.getElementById("join").style.pointerEvents = "none";
-    document.getElementById("join").style.opacity = "0.5";
-  }
-})
-.catch(() => {
-  document.getElementById("players").innerHTML = "👥 0 پلیر";
-  document.getElementById("status").innerHTML = "🔴 وضعیت سرور: آفلاین";
-  document.getElementById("status").className = "status offline";
-  document.getElementById("join").style.pointerEvents = "none";
-  document.getElementById("join").style.opacity = "0.5";
-});
+function setOnline(players){
+  document.getElementById("players").innerText = `👥 ${players} پلیر`;
+  document.getElementById("status").innerText = "🟢 وضعیت سرور: آنلاین";
+  document.getElementById("status").className = "info status-online";
+  const join = document.getElementById("join");
+  join.classList.remove("disabled");
+  join.href = `samp://${ip}:${port}`;
+}
+
+// تست دستی (بعداً حذف می‌کنیم)
+setOffline();
+// setOnline(5); ← اگر خواستی آنلاین تست کنی
 </script>
 
 </body>
